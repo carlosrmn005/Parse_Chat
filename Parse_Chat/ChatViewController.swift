@@ -11,7 +11,7 @@ import Parse
 
 class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
-    var chat: [String]!
+    var chat: [[String: Any]] = []
     
     @IBOutlet weak var chatMessageField: UITextField!
     @IBOutlet weak var tableView: UITableView!
@@ -33,22 +33,18 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        /*if businesses != nil
-        {
-            return businesses!.count
-        }
-        else
-        {
-            return 0
-        }*/
-        return 0
+        return chat.count
     }
     
     @available(iOS 2.0, *)
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
-        
+        /*
+        let chats = chat[indexPath.row]
+        let message = chat["message"] as! String
+        cell.pastMessage.text = message
+        */
         //cell.business = businesses[indexPath.row]
         
         return cell

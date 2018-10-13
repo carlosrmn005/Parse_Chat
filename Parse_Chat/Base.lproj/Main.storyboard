@@ -114,6 +114,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="pastMessage" destination="7UL-08-Ukm" id="W0v-dc-gkP"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
