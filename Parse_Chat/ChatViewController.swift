@@ -21,7 +21,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         
         tableView.delegate = self
-        
+        tableView.dataSource = self
         // Do any additional setup after loading the view.
     }
 
@@ -56,19 +56,39 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         chatMessage["text"] = chatMessageField.text ?? ""
         
         chatMessage.saveInBackground
-            { (success, error) in
-                if success
-                {
-                    print("The message was saved!")
-                    self.chatMessageField.text = nil
-                }
-                else if let error = error
-                {
-                    print("Problem saving message: \(error.localizedDescription)")
-                }
+        { (success, error) in
+            if success
+            {
+                print("The message was saved!")
+                self.chatMessageField.text = nil
             }
+            else if let error = error
+            {
+                print("Problem saving message: \(error.localizedDescription)")
+            }
+        }
     }
     
+    func onTimer()
+    {
+        // Add code to be run periodically
+        // construct query
+        let query = PFQuery(className: "Message")
+        //query.whereKeyExists("text")
+        query.limit = 20
+        // fetch data asynchronously
+        
+        query.findObjectsInBackground(block: (({ (object: [PFObject]?, error: Error?) in
+            if let object = object
+            {
+                // do something with the array of object returned by the call
+            }
+            else
+            {
+                print(error?.localizedDescription)
+            }
+        })))
+    }
     
     /*
     // MARK: - Navigation
