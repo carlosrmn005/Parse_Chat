@@ -12,9 +12,12 @@ import Parse
 class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
     var chat: [[String: Any]] = []
+    var chatContents = [PFObject]()
     
     @IBOutlet weak var chatMessageField: UITextField!
     @IBOutlet weak var tableView: UITableView!
+    
+    let User = PFUser.current()
     
     override func viewDidLoad()
     {
@@ -22,7 +25,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         tableView.delegate = self
         tableView.dataSource = self
-        // Do any additional setup after loading the view.
+        // Auto size row height based on cell autolayout constraints
+        tableView.rowHeight = UITableViewAutomaticDimension
+        // Provide an estimated row height. Used for calculating scroll indicator
+        tableView.estimatedRowHeight = 50
+        
+        onTimer()
     }
 
     override func didReceiveMemoryWarning()
@@ -40,13 +48,17 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
-        /*
-        let chats = chat[indexPath.row]
-        let message = chat["message"] as! String
-        cell.pastMessage.text = message
-        */
-        //cell.business = businesses[indexPath.row]
+        let chatMessage = PFObject(className: "Message")
         
+        //cell.chatMessageLabel.text = chatMessage
+        
+        if let user = chatMessage["User"] as? PFUser {
+            // User found! update username label with username
+            cell.userNameLabel.text = user.username
+        } else {
+            // No user found, set default username
+            cell.userNameLabel.text = "🤖"
+        }
         return cell
     }
     
@@ -60,34 +72,40 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             if success
             {
                 print("The message was saved!")
-                self.chatMessageField.text = nil
             }
             else if let error = error
             {
                 print("Problem saving message: \(error.localizedDescription)")
             }
         }
+        self.chatMessageField.text = nil
     }
     
-    func onTimer()
+    func refresh()
     {
-        // Add code to be run periodically
         // construct query
         let query = PFQuery(className: "Message")
-        //query.whereKeyExists("text")
-        query.limit = 20
-        // fetch data asynchronously
+        query.order(byDescending: "createdAt")
+        query.includeKey("User")
         
-        query.findObjectsInBackground(block: (({ (object: [PFObject]?, error: Error?) in
-            if let object = object
+        query.findObjectsInBackground { (objects: [PFObject]?, error: Error?) in
+            if let object = objects
             {
                 // do something with the array of object returned by the call
+                self.chatContents = object
+                self.tableView.reloadData()
             }
             else
             {
                 print(error?.localizedDescription)
             }
-        })))
+        }
+    }
+    
+    @objc func onTimer()
+    {
+        Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.onTimer), userInfo: nil, repeats: true)
+        refresh()
     }
     
     /*
