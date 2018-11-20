@@ -9,7 +9,9 @@
 import UIKit
 import Parse
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController
+{
+    
     @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     
@@ -35,13 +37,23 @@ class LoginViewController: UIViewController {
         
         // call sign up function on the object
         newUser.signUpInBackground { (success: Bool, error: Error?) in
-            if let error = error {
+            if success
+            {
+                print("User created")
+                self.performSegue(withIdentifier: "loginSegue", sender: nil)
+            }
+            else
+            {
+                print(error?.localizedDescription)
+                
+            }
+            /*if let error = error {
                 print(error.localizedDescription)
             } else {
                 print("User Registered successfully")
                 self.performSegue(withIdentifier: "loginSegue", sender: nil)
                 // manually segue to logged in view
-            }
+            }*/
         }
         
         if ((usernameField.text?.isEmpty)! || (passwordField.text?.isEmpty)!)

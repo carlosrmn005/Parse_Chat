@@ -72,7 +72,7 @@
         <!--ChatViewController-->
         <scene sceneID="pee-kG-KDc">
             <objects>
-                <viewController title="ChatViewController" id="vgL-O7-HNs" customClass="ChatViewController" customModule="Parse_Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ChatViewController" title="ChatViewController" id="vgL-O7-HNs" customClass="ChatViewController" customModule="Parse_Chat" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3kn-mh-kae">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -119,6 +119,7 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="7UL-08-Ukm" secondAttribute="bottom" constant="8" id="94k-Rf-Bht"/>
                                                 <constraint firstAttribute="trailing" secondItem="7UL-08-Ukm" secondAttribute="trailing" constant="8" id="BJi-78-FrN"/>
                                                 <constraint firstItem="7UL-08-Ukm" firstAttribute="leading" secondItem="z84-vw-GpJ" secondAttribute="leading" constant="8" id="WBz-aR-RV7"/>
                                                 <constraint firstItem="zQc-Sf-D6l" firstAttribute="top" secondItem="z84-vw-GpJ" secondAttribute="top" constant="8" id="mIT-vD-uop"/>

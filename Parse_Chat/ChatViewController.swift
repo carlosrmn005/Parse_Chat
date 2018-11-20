@@ -11,11 +11,11 @@ import Parse
 
 class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
-    var chat: [[String: Any]] = []
-    var chatContents = [PFObject]()
-    
     @IBOutlet weak var chatMessageField: UITextField!
     @IBOutlet weak var tableView: UITableView!
+    
+    var chat: [[String: Any]] = []
+    var chatContents = [PFObject]()
     
     let User = PFUser.current()
     
@@ -41,24 +41,29 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return chat.count
+        return chatContents.count
     }
     
     @available(iOS 2.0, *)
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
-        let chatMessage = PFObject(className: "Message")
+        
+        let chatrow = chatContents[indexPath.row]
+        let text = chatrow["text"] as? String
         
         //cell.chatMessageLabel.text = chatMessage
         
-        if let user = chatMessage["User"] as? PFUser {
+        if let user = chatrow["username"] as? String {
             // User found! update username label with username
-            cell.userNameLabel.text = user.username
+            cell.userNameLabel.text = user
         } else {
             // No user found, set default username
             cell.userNameLabel.text = "🤖"
         }
+        
+        cell.chatMessageLabel.text = text
+        
         return cell
     }
     
@@ -66,19 +71,21 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     {
         let chatMessage = PFObject(className: "Message")
         chatMessage["text"] = chatMessageField.text ?? ""
+        chatMessage["username"] = (PFUser.current()?.username)
         
         chatMessage.saveInBackground
         { (success, error) in
             if success
             {
                 print("The message was saved!")
+                self.chatMessageField.text = ""
             }
             else if let error = error
             {
                 print("Problem saving message: \(error.localizedDescription)")
             }
         }
-        self.chatMessageField.text = nil
+        //self.chatMessageField.text = nil
     }
     
     func refresh()
